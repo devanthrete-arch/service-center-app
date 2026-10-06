@@ -57,7 +57,7 @@ export function Login() {
         <button className="primary" type="submit" disabled={busy}>
           Continue <ChevronRight />
         </button>
-        <small>POST /v1/dev/session · start the backend with npm run start:memory</small>
+        <small>POST /v1/dev/session · start the backend with npm run start:workshop</small>
       </form>
     </main>
   );

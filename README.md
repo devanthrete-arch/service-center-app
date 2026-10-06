@@ -4,7 +4,7 @@ Staff workspace on the Autoflex APIs: walk-ins, booking queue, job cards, approv
 
 ## Run
 
-Start the backend first (`cd ../autoflex-backend && PORT=3001 npm run start:memory`), then:
+Start the durable workshop first (`cd ../autoflex-backend && npm run start:workshop` after Postgres and migrations), then:
 
 ```bash
 npm install
