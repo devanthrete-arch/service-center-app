@@ -52,10 +52,10 @@ export function errorMessage(err: unknown, fallback = 'Something went wrong'): s
   return err instanceof Error && err.message ? err.message : fallback;
 }
 
-export async function devStaffSession(persona: string): Promise<string> {
+export async function devStaffSession(phone: string): Promise<string> {
   const session = await autoflex<{ accessToken: string }>('/v1/dev/session', {
     method: 'POST',
-    body: JSON.stringify({ persona }),
+    body: JSON.stringify({ phone, actor: 'staff' }),
   });
   return session.accessToken;
 }

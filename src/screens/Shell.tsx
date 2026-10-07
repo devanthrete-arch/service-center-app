@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, Bike, CalendarDays, Home, List, Menu, Plus, Wrench, type LucideIcon } from 'lucide-react';
 import { useStore } from '../domain/store';
 import { initials, OPEN_STATUSES, roleLabel } from '../domain/types';
+import { signOut } from '../lib/session';
 
 function pageTitle(path: string): string {
   if (path === '/') return 'Floor board';
@@ -18,6 +19,7 @@ function pageTitle(path: string): string {
 export function Shell({ children }: { children: ReactNode }) {
   const { me, role, jobs, pendingBookings, isDesk } = useStore();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
   const openCount = jobs.filter((job) => OPEN_STATUSES.includes(job.status)).length;
   const nav: [string, string, LucideIcon][] = [
@@ -85,8 +87,17 @@ export function Shell({ children }: { children: ReactNode }) {
               <div className="role-menu">
                 <p>Signed in</p>
                 <Link to="/more" onClick={() => setOpen(false)}>
-                  Workspace and sign out
+                  Workspace
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    signOut();
+                    navigate('/login', { replace: true });
+                  }}
+                >
+                  Sign out
+                </button>
               </div>
             ) : null}
           </div>

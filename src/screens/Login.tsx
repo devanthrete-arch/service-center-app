@@ -1,24 +1,42 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bike, ChevronRight, Wrench } from 'lucide-react';
-import { DEV_PERSONAS } from '../domain/types';
 import { devStaffSession, errorMessage } from '../lib/api';
 import { setAccessToken } from '../lib/session';
 import { ErrorText } from './ui';
 
+function digitsOnly(value: string): string {
+  return value.replace(/\D/g, '');
+}
+
 export function Login() {
   const navigate = useNavigate();
-  const [persona, setPersona] = useState('advisor');
+  const [step, setStep] = useState<'phone' | 'code'>('phone');
+  const [mobile, setMobile] = useState('');
+  const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const selected = DEV_PERSONAS.find((item) => item.key === persona);
 
-  async function onSubmit(event: FormEvent) {
+  function sendCode(event: FormEvent) {
     event.preventDefault();
-    setBusy(true);
     setError('');
+    if (mobile.length < 10) {
+      setError('Enter a 10-digit Indian mobile number.');
+      return;
+    }
+    setStep('code');
+  }
+
+  async function verify(event: FormEvent) {
+    event.preventDefault();
+    setError('');
+    if (code.length < 6) {
+      setError('Enter the 6-digit code.');
+      return;
+    }
+    setBusy(true);
     try {
-      setAccessToken(await devStaffSession(persona));
+      setAccessToken(await devStaffSession(mobile));
       navigate('/', { replace: true });
     } catch (err) {
       setError(errorMessage(err, 'Could not start a staff session'));
@@ -36,29 +54,56 @@ export function Login() {
         </div>
         <p>AUTOFLEX</p>
         <h1>Keep every service job moving.</h1>
-        <span>Apex Auto Garage · local staff session while Frevels IAM is off.</span>
+        <span>Apex Auto Garage · sign in with your staff mobile.</span>
       </section>
-      <form className="login-card" onSubmit={onSubmit}>
-        <div className="eyebrow">LOCAL STAFF SESSION</div>
-        <h2>Sign in to the floor</h2>
-        <p>Pick a seeded persona. Any OTP is accepted on the customer app; here the role is chosen directly.</p>
-        <label>
-          Who are you?
-          <select value={persona} onChange={(event) => setPersona(event.target.value)}>
-            {DEV_PERSONAS.map((item) => (
-              <option key={item.key} value={item.key}>
-                {item.name} · {item.role}
-              </option>
-            ))}
-          </select>
-        </label>
-        {selected ? <p>{selected.detail}</p> : null}
-        <ErrorText error={error} />
-        <button className="primary" type="submit" disabled={busy}>
-          Continue <ChevronRight />
-        </button>
-        <small>POST /v1/dev/session · start the backend with npm run start:workshop</small>
-      </form>
+      {step === 'phone' ? (
+        <form className="login-card" onSubmit={sendCode}>
+          <div className="eyebrow">STAFF SIGN IN</div>
+          <h2>Sign in to the floor</h2>
+          <p>Use the mobile number on your staff profile. We&apos;ll send a one-time code.</p>
+          <label>
+            Mobile
+            <input
+              inputMode="numeric"
+              autoComplete="tel"
+              placeholder="9845000002"
+              value={mobile}
+              onChange={(event) => setMobile(digitsOnly(event.target.value).slice(0, 10))}
+            />
+          </label>
+          <ErrorText error={error} />
+          <button className="primary" type="submit">
+            Send code <ChevronRight />
+          </button>
+          <small>
+            Local mode accepts any 6-digit code. Apex staff: Meera 9845000001, Arjun 9845000002, Ravi
+            9845000003, Sana 9845000004.
+          </small>
+        </form>
+      ) : (
+        <form className="login-card" onSubmit={verify}>
+          <div className="eyebrow">STAFF SIGN IN</div>
+          <h2>Enter the code</h2>
+          <p>Sent to +91 {mobile}</p>
+          <label>
+            Code
+            <input
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              placeholder="123456"
+              value={code}
+              onChange={(event) => setCode(digitsOnly(event.target.value).slice(0, 6))}
+            />
+          </label>
+          <ErrorText error={error} />
+          <button className="primary" type="submit" disabled={busy}>
+            Sign in <ChevronRight />
+          </button>
+          <button className="secondary" type="button" onClick={() => setStep('phone')}>
+            Use a different number
+          </button>
+        </form>
+      )}
     </main>
   );
 }

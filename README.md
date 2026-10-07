@@ -18,4 +18,4 @@ npm run typecheck
 npm run build
 ```
 
-Staff tokens come from `POST /v1/dev/session` with a persona. Frevels IAM is the later sign-in path.
+Staff sign in with a mobile number and a one-time code. Locally that is `POST /v1/dev/session` with `{ "phone", "actor": "staff" }`. Frevels IAM is the later sign-in path.
