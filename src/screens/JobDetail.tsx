@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { CheckCircle2, Clock3, Plus } from 'lucide-react';
 import { useStore } from '../domain/store';
@@ -17,6 +17,7 @@ import {
   type PartType,
 } from '../domain/types';
 import { Badge, Empty, ErrorText, Modal, statusTone, useAction } from './ui';
+import { TrackingLinkPanel } from './TrackingLinkPanel';
 
 type Tab = 'timeline' | 'inspection' | 'estimate' | 'record';
 type ModalKind = 'next' | 'note' | 'approval' | 'verbal' | 'hold' | 'skip' | 'cancel' | 'close' | 'more' | 'qc' | null;
@@ -30,6 +31,8 @@ export function JobDetailScreen() {
   const [tab, setTab] = useState<Tab>('timeline');
   const [modal, setModal] = useState<ModalKind>(null);
   const [loadError, setLoadError] = useState('');
+  const [tracking, setTracking] = useState(false);
+  const moreButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -98,12 +101,17 @@ export function JobDetailScreen() {
               Record QC
             </button>
           ) : null}
-          <button className="secondary" type="button" onClick={() => setModal('more')}>
+          <button ref={moreButton} className="secondary" type="button" onClick={() => setModal('more')}>
             More
           </button>
         </div>
       </div>
       <ErrorText error={error} />
+      {tracking && <TrackingLinkPanel key={`${store.me.staff.id}:${store.me.center.id}:${job.id}`}
+        jobId={job.id} staffId={store.me.staff.id} centerId={store.me.center.id}
+        canReplace={store.can('jobs:update')} close={() => setTracking(false)}
+        returnFocus={() => moreButton.current?.focus()}
+        changed={async () => { setJob(await store.job(job.id)); }} />}
       <section className="job-summary">
         <div>
           <span>Customer request</span>
@@ -192,6 +200,7 @@ export function JobDetailScreen() {
           busy={busy}
           close={() => setModal(null)}
           apply={apply}
+          openTracking={() => { setModal(null); setTracking(true); }}
         />
       ) : null}
     </>
@@ -480,6 +489,7 @@ function JobModal({
   busy,
   close,
   apply,
+  openTracking,
 }: {
   kind: Exclude<ModalKind, null>;
   job: JobDetail;
@@ -488,6 +498,7 @@ function JobModal({
   busy: boolean;
   close: () => void;
   apply: (action: () => Promise<JobDetail>) => Promise<void>;
+  openTracking: () => void;
 }) {
   const store = useStore();
   const [note, setNote] = useState('');
@@ -517,7 +528,7 @@ function JobModal({
   if (kind === 'more') {
     return (
       <Modal title="Job actions" close={close}>
-        <MoreActions job={job} express={express} apply={apply} close={close} />
+        <MoreActions job={job} express={express} apply={apply} close={close} openTracking={openTracking} />
       </Modal>
     );
   }
@@ -804,11 +815,13 @@ function MoreActions({
   express,
   apply,
   close,
+  openTracking,
 }: {
   job: JobDetail;
   express: boolean;
   apply: (action: () => Promise<JobDetail>) => Promise<void>;
   close: () => void;
+  openTracking: () => void;
 }) {
   const store = useStore();
   const [mode, setMode] = useState<'menu' | 'hold' | 'skip' | 'cancel'>('menu');
@@ -869,6 +882,8 @@ function MoreActions({
 
   return (
     <div className="action-stack">
+      {store.me.roles.some(role => ['admin', 'manager', 'advisor'].includes(role)) && store.can('jobs:read') &&
+        <button type="button" onClick={openTracking}>Tracking link</button>}
       <button type="button" onClick={() => window.print()}>
         Print job card
       </button>

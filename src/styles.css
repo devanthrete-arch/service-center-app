@@ -8,3 +8,10 @@
 .role-menu a:hover,.role-menu button:hover{background:#eef4fa;color:var(--primary)}
 .dot.simulated{background:#1f9d62}
 .dot.skipped{background:#aaa}
+/* Tracking URLs are shown only in the authorized dialog, never the printed card. */
+.tracking-dialog { width: min(560px, calc(100vw - 32px)); max-height: 85vh; overflow: auto; border: 1px solid #dce1e8; border-radius: 16px; padding: 24px; }
+.tracking-dialog::backdrop { background: rgb(0 0 0 / 45%); }
+.tracking-dialog label { display: grid; gap: 8px; margin: 16px 0; }
+.tracking-dialog input, .tracking-dialog select { width: 100%; min-width: 0; box-sizing: border-box; padding: 10px; }
+.tracking-dialog button, .tracking-dialog a { margin: 6px 8px 6px 0; }
+@media print { .tracking-dialog { display: none !important; } }
