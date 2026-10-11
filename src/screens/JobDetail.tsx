@@ -399,6 +399,16 @@ function Estimate({
           <div key={line.id}>
             <div>
               <strong>{line.description}</strong>
+              {!!line.scope?.length && (
+                <ul>
+                  {line.scope.map((part, index) => (
+                    <li key={index}>
+                      {part.quantity} × {part.name}
+                      {part.description ? ` — ${part.description}` : ''}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <span>
                 {line.kind}
                 {line.partType ? ` · ${line.partType}` : ''} · {line.status}

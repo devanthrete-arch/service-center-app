@@ -29,3 +29,9 @@ Job detail → More → Tracking link is available to desk roles with `jobs:read
 Lost responses retain the exact attempt: use **Check replacement result** before proceeding. Current-link reads/copy/open stay available while an attempt is unresolved, even if update permission is lost; reads do not resolve that attempt. Non-secret retry metadata survives same-session reload and is cleared on sign-out/identity change. Acknowledged success stays visible if subsequent reads fail.
 
 Run Vite, then visit `/tests/tracking-link.html` for the actual component's ten recovery/configuration/StrictMode/narrow-layout scenarios. Test entry points are TypeScript checked but are not production build entry points. See [Tracking runbook](../development-documents/architecture/public-job-timeline-runbook.md#staff-tracking-link-replacement-af-004).
+
+## AF-029 catalog and marketplace
+
+Admins/managers with `center:manage` manage catalog services, local custom options and packages at `/service-menu`. The backend needs migration 0009 and `npm run services:import`. Menu commands use versioned, idempotent saves with recoverable uncertain attempts. Browser regression instructions are in `tests/README.md`.
+
+[Implemented flow and setup](../development-documents/architecture/service-marketplace-runbook.md).

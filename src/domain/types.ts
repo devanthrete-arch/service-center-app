@@ -50,6 +50,7 @@ export type Me = {
 };
 
 export type LineItem = {
+  scope?: { name: string; description: string | null; quantity: number }[];
   id: string;
   kind: LineKind;
   description: string;
@@ -263,7 +264,8 @@ export function money(value: string | number | null | undefined): string {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(Number(value ?? 0));
 }
 

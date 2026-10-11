@@ -15,3 +15,78 @@
 .tracking-dialog input, .tracking-dialog select { width: 100%; min-width: 0; box-sizing: border-box; padding: 10px; }
 .tracking-dialog button, .tracking-dialog a { margin: 6px 8px 6px 0; }
 @media print { .tracking-dialog { display: none !important; } }
+
+.service-menu {
+  display: grid;
+  gap: 20px;
+}
+.menu-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid #dce1e8;
+}
+.menu-row > div {
+  min-width: 0;
+}
+.menu-row p,
+.menu-row h3 {
+  overflow-wrap: anywhere;
+}
+.menu-form fieldset {
+  border: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.menu-form label {
+  display: grid;
+  gap: 8px;
+}
+.menu-form textarea {
+  min-height: 100px;
+}
+.menu-component {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.menu-component input[type='number'] {
+  width: 80px;
+}
+.menu-retry {
+  border-left: 3px solid #d99724;
+  padding: 12px;
+}
+@media (max-width: 640px) {
+  .menu-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.service-menu button:not(.primary) {
+  border: 1px solid #cbd3df;
+  background: white;
+  color: #173960;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+.service-menu button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.service-menu input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+.service-menu button:focus-visible {
+  outline: 3px solid #317ed0;
+  outline-offset: 3px;
+}

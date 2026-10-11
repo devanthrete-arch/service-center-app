@@ -12,6 +12,7 @@ function pageTitle(path: string): string {
   if (path === '/new') return 'Walk-in';
   if (path === '/bookings') return 'Bookings';
   if (path === '/handover') return 'Shift board';
+  if (path === '/service-menu') return 'Services & packages';
   if (path === '/more') return 'Workspace';
   return 'Workshop';
 }
@@ -48,9 +49,18 @@ export function Shell({ children }: { children: ReactNode }) {
               <Icon />
               <span>{label}</span>
               {label === 'Jobs' ? <em>{openCount}</em> : null}
-              {label === 'Bookings' && pendingBookings.length ? <em>{pendingBookings.length}</em> : null}
+              {label === 'Bookings' && pendingBookings.length ? (
+                <em>{pendingBookings.length}</em>
+              ) : null}
             </NavLink>
           ))}
+          {me.permissions.includes('center:manage') &&
+            me.roles.some((r) => ['admin', 'manager'].includes(r)) && (
+              <NavLink to="/service-menu">
+                <Wrench />
+                <span>Services & packages</span>
+              </NavLink>
+            )}
         </nav>
         <div className="sim-card">
           <Wrench />
@@ -86,6 +96,12 @@ export function Shell({ children }: { children: ReactNode }) {
             {open ? (
               <div className="role-menu">
                 <p>Signed in</p>
+                {me.permissions.includes('center:manage') &&
+                  me.roles.some((r) => ['admin', 'manager'].includes(r)) && (
+                    <Link to="/service-menu" onClick={() => setOpen(false)}>
+                      Services & packages
+                    </Link>
+                  )}
                 <Link to="/more" onClick={() => setOpen(false)}>
                   Workspace
                 </Link>
