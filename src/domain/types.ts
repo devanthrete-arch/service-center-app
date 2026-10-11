@@ -37,9 +37,37 @@ export type Center = {
   gstin: string | null;
   upiVpa: string | null;
   expressSkipEnabled: boolean;
-  address: { city: string | null; formatted: string | null };
+  address: {
+    city: string | null;
+    formatted: string | null;
+    line1?: string | null;
+    line2?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+  };
+  latitude?: number | null;
+  longitude?: number | null;
+  heroImageUrl?: string | null;
+  photoUrls?: string[];
+  googleMapsUrl?: string | null;
   autoAccept: boolean;
   slotCapacity: number;
+};
+
+export type CenterPatch = {
+  upiVpa?: string;
+  expressSkipEnabled?: boolean;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postalCode?: string | null;
+  formattedAddress?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  heroImageUrl?: string | null;
+  photoUrls?: string[];
+  googleMapsUrl?: string | null;
 };
 
 export type Me = {
@@ -370,8 +398,28 @@ export function eventTitle(entry: TimelineEntry): string {
 }
 
 export const DEV_PERSONAS: { key: string; name: string; role: string; detail: string }[] = [
-  { key: 'manager', name: 'Meera Iyer', role: 'Manager', detail: 'Floor, roster, bills, and verbal overrides' },
-  { key: 'advisor', name: 'Arjun Rao', role: 'Advisor', detail: 'Walk-ins, bookings, and approvals' },
-  { key: 'technician', name: 'Ravi Kumar', role: 'Technician', detail: 'Assigned jobs on the floor' },
-  { key: 'technician2', name: 'Sana Sheikh', role: 'Technician', detail: 'Second technician on the roster' },
+  {
+    key: 'manager',
+    name: 'Meera Iyer',
+    role: 'Manager',
+    detail: 'Floor, roster, bills, and verbal overrides',
+  },
+  {
+    key: 'advisor',
+    name: 'Arjun Rao',
+    role: 'Advisor',
+    detail: 'Walk-ins, bookings, and approvals',
+  },
+  {
+    key: 'technician',
+    name: 'Ravi Kumar',
+    role: 'Technician',
+    detail: 'Assigned jobs on the floor',
+  },
+  {
+    key: 'technician2',
+    name: 'Sana Sheikh',
+    role: 'Technician',
+    detail: 'Second technician on the roster',
+  },
 ];

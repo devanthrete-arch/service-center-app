@@ -90,3 +90,19 @@
   outline: 3px solid #317ed0;
   outline-offset: 3px;
 }
+
+.center-profile-editor { min-width: 0; grid-column: 1 / -1; }
+.center-profile-editor form { display: grid; gap: 18px; }
+.center-profile-editor fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 14px; }
+.center-profile-editor legend { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+.center-profile-editor input,
+.center-profile-editor textarea { width: 100%; min-width: 0; }
+.center-profile-editor textarea { min-height: 90px; }
+.center-profile-help { font-size: 12px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.center-profile-editor > .center-profile-help { margin-bottom: 22px; }
+.center-profile-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.center-profile-editor .primary { justify-self: start; min-height: 44px; }
+.center-profile-editor button:focus-visible { outline: 3px solid #317ed0; outline-offset: 3px; }
+.center-profile-editor fieldset:disabled { opacity: 0.65; }
+.center-profile-saved { color: #147446; font-size: 12px; }
+@media (max-width: 480px) { .center-profile-fields { grid-template-columns: minmax(0, 1fr); } }

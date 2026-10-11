@@ -5,6 +5,7 @@ import { useStore } from '../domain/store';
 import { formatWhen, OPEN_STATUSES, roleLabel, statusLabel } from '../domain/types';
 import { Badge, ErrorText, statusTone, useAction } from './ui';
 import { signOut } from '../lib/session';
+import { CenterProfileEditor } from './CenterProfileEditor';
 
 export function Handover() {
   const { jobs, addNote, job: loadJob } = useStore();
@@ -53,7 +54,9 @@ export function Handover() {
                 <input
                   placeholder="Internal handover note"
                   value={notes[job.id] || ''}
-                  onChange={(e) => setNotes((current) => ({ ...current, [job.id]: e.target.value }))}
+                  onChange={(e) =>
+                    setNotes((current) => ({ ...current, [job.id]: e.target.value }))
+                  }
                 />
                 <button
                   type="button"
@@ -83,6 +86,8 @@ export function More() {
   const { busy, error, run } = useAction();
   const [upi, setUpi] = useState(me.center.upiVpa ?? '');
   const [express, setExpress] = useState(me.center.expressSkipEnabled);
+  const canManageProfile =
+    ['admin', 'manager'].includes(role) && me.permissions.includes('center:manage');
 
   return (
     <div className="settings-grid">
@@ -112,10 +117,18 @@ export function More() {
           <>
             <label>
               UPI id for the counter
-              <input value={upi} onChange={(e) => setUpi(e.target.value)} placeholder="apexauto@okhdfcbank" />
+              <input
+                value={upi}
+                onChange={(e) => setUpi(e.target.value)}
+                placeholder="apexauto@okhdfcbank"
+              />
             </label>
             <label className="check">
-              <input type="checkbox" checked={express} onChange={(e) => setExpress(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={express}
+                onChange={(e) => setExpress(e.target.checked)}
+              />
               Allow express skip of inspection and QC
             </label>
             <ErrorText error={error} />
@@ -123,7 +136,11 @@ export function More() {
               className="primary"
               type="button"
               disabled={busy}
-              onClick={() => void run(() => updateCenter({ upiVpa: upi || undefined, expressSkipEnabled: express }))}
+              onClick={() =>
+                void run(() =>
+                  updateCenter({ upiVpa: upi || undefined, expressSkipEnabled: express }),
+                )
+              }
             >
               Save center settings
             </button>
@@ -167,6 +184,9 @@ export function More() {
           Sign out
         </button>
       </section>
+      {canManageProfile && (
+        <CenterProfileEditor key={me.center.id} centerId={me.center.id} save={updateCenter} />
+      )}
     </div>
   );
 }

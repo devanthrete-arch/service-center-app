@@ -15,6 +15,7 @@ import {
   istToday,
   primaryRole,
   type CenterBooking,
+  type CenterPatch,
   type Delivery,
   type JobDetail,
   type JobStatus,
@@ -88,7 +89,7 @@ type Store = {
     id: string,
     body: { odometerKm?: number; fuelLevel?: string; assignedTechnicianId?: string },
   ) => Promise<string>;
-  updateCenter: (patch: { upiVpa?: string; expressSkipEnabled?: boolean }) => Promise<void>;
+  updateCenter: (patch: CenterPatch) => Promise<void>;
 };
 
 const StoreContext = createContext<Store | null>(null);
@@ -104,9 +105,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     const profile = await staffApi.me();
-    const technicianOnly = profile.roles.includes('technician') && !profile.roles.some((role) =>
-      ['admin', 'manager', 'advisor'].includes(role),
-    );
+    const technicianOnly =
+      profile.roles.includes('technician') &&
+      !profile.roles.some((role) => ['admin', 'manager', 'advisor'].includes(role));
     const desk = profile.permissions.includes('bookings:read');
     const [list, pending, scheduled, roster] = await Promise.all([
       staffApi.jobs({
@@ -152,7 +153,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       jobs,
       pendingBookings,
       scheduledBookings,
-      todayBookings: scheduledBookings.filter((booking) => istDate(booking.slotStart) === istToday()),
+      todayBookings: scheduledBookings.filter(
+        (booking) => istDate(booking.slotStart) === istToday(),
+      ),
       staff,
       technicians: staff.filter((member) => member.designation === 'TECHNICIAN'),
       can: (permission) => me.permissions.includes(permission),
@@ -177,7 +180,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       },
       saveInspection: async (job, items, complete) =>
         after(await staffApi.inspection(job.id, items, complete, job.version)),
-      qc: async (job, passed, notes) => after(await staffApi.qc(job.id, passed, job.version, notes)),
+      qc: async (job, passed, notes) =>
+        after(await staffApi.qc(job.id, passed, job.version, notes)),
       addLine: async (job, item) => {
         await staffApi.addLine(job.id, item, job.version);
         return reloadJob(job.id);

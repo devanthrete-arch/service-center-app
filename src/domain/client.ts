@@ -1,6 +1,7 @@
 import { autoflex } from '../lib/api';
 import type {
   Center,
+  CenterPatch,
   CenterBooking,
   Delivery,
   JobDetail,
@@ -42,10 +43,15 @@ export const staffApi = {
   me: () => get<Me>('/v1/staff/me'),
   roster: () => get<StaffMember[]>('/v1/staff'),
   center: () => get<Center>('/v1/center'),
-  updateCenter: (patch: { upiVpa?: string; expressSkipEnabled?: boolean }) =>
-    command<Center>('PATCH', '/v1/center', patch),
+  updateCenter: (patch: CenterPatch) => command<Center>('PATCH', '/v1/center', patch),
 
-  jobs: (query: { status?: JobStatus; active?: boolean; assignedTo?: string; search?: string; limit?: number }) => {
+  jobs: (query: {
+    status?: JobStatus;
+    active?: boolean;
+    assignedTo?: string;
+    search?: string;
+    limit?: number;
+  }) => {
     const params = new URLSearchParams();
     if (query.status) params.set('status', query.status);
     if (query.active) params.set('active', 'true');
@@ -101,13 +107,24 @@ export const staffApi = {
     command<JobDetail>('POST', `/v1/jobs/${id}/approvals/${approvalId}/withdraw`, {}, version),
   addMedia: (
     id: string,
-    body: { kind: string; mimeType: string; sizeBytes: number; caption?: string; visibleToCustomer?: boolean },
+    body: {
+      kind: string;
+      mimeType: string;
+      sizeBytes: number;
+      caption?: string;
+      visibleToCustomer?: boolean;
+    },
   ) => command<Media>('POST', `/v1/jobs/${id}/media`, body),
   confirmMedia: (id: string, mediaId: string) =>
     command<Media>('POST', `/v1/jobs/${id}/media/${mediaId}/confirm`),
   issueInvoice: (
     id: string,
-    body: { finalAmountInr?: number; adjustmentReason?: string; adjustmentNote?: string; notes?: string },
+    body: {
+      finalAmountInr?: number;
+      adjustmentReason?: string;
+      adjustmentNote?: string;
+      notes?: string;
+    },
     version: number,
   ) => command<unknown>('POST', `/v1/jobs/${id}/invoice`, body, version),
   close: (
@@ -135,7 +152,8 @@ export const staffApi = {
       `/v1/center/bookings?from=${from}&to=${to}`,
     ),
   pendingBookings: () => get<CenterBooking[]>('/v1/center/bookings/pending'),
-  confirmBooking: (id: string) => command<CenterBooking>('POST', `/v1/center/bookings/${id}/confirm`),
+  confirmBooking: (id: string) =>
+    command<CenterBooking>('POST', `/v1/center/bookings/${id}/confirm`),
   declineBooking: (id: string, reason: string) =>
     command<CenterBooking>('POST', `/v1/center/bookings/${id}/decline`, { reason }),
   markNoShow: (id: string) => command<CenterBooking>('POST', `/v1/center/bookings/${id}/no-show`),
