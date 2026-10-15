@@ -213,12 +213,44 @@ export type Delivery = {
   createdAt: string;
 };
 
+export type IntakeVehicleType = 'TWO_WHEELER' | 'FOUR_WHEELER';
+export type CreatedJob = {
+  id: string;
+  jobNumber: string | null;
+  status: JobStatus;
+};
+export type IntakeCustomer = {
+  id: string;
+  revision: number;
+  name: string | null;
+  phone: string;
+  accountLinkState: 'ACCOUNT_LINKED' | 'LINK_REQUIRED';
+};
+export type IntakeVehicle = {
+  id: string;
+  revision: number;
+  registrationNumber: string;
+  makeModel: string | null;
+  vehicleType: IntakeVehicleType | null;
+  hasActiveJob: boolean;
+  activeJob?: CreatedJob | null;
+};
+export type IntakeVehiclePage = {
+  items: IntakeVehicle[];
+  nextCursor: string | null;
+  customerRevision: number;
+};
 export type WalkInInput = {
-  customerPhone: string;
-  customerName?: string;
-  vehicleRegistration: string;
-  vehicleMakeModel?: string;
-  vehicleType?: 'TWO_WHEELER' | 'FOUR_WHEELER';
+  customerId: string;
+  customerRevision: number;
+  vehicleId?: string;
+  vehicleRevision?: number;
+  confirmedVehicleType?: IntakeVehicleType;
+  newVehicle?: {
+    registrationNumber: string;
+    vehicleType: IntakeVehicleType;
+    makeModel?: string;
+  };
   serviceType: string;
   odometerKm?: number;
   fuelLevel?: string;

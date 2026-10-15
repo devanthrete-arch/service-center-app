@@ -106,3 +106,15 @@
 .center-profile-editor fieldset:disabled { opacity: 0.65; }
 .center-profile-saved { color: #147446; font-size: 12px; }
 @media (max-width: 480px) { .center-profile-fields { grid-template-columns: minmax(0, 1fr); } }
+.intake-fields{border:0;padding:0;margin:0;min-width:0}.intake-feedback:focus{outline:none}.intake-feedback:empty{display:none}.intake-actions{display:flex;gap:10px;flex-wrap:wrap}.intake-customer,.intake-review{background:#f6f8fb;border:1px solid var(--border);border-radius:12px;padding:16px;overflow-wrap:anywhere}.intake-customer p{margin:8px 0}.intake-vehicles{display:grid;gap:10px;margin:16px 0}.intake-vehicle{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer}.intake-vehicle input{width:auto;flex:none}.intake-vehicle span{display:grid;gap:5px;overflow-wrap:anywhere}.intake-vehicle small{color:var(--muted)}.intake-vehicle .intake-open{color:#9a5c00}.intake-recovery{border-color:#d69a2d}.intake-result{overflow-wrap:anywhere}.walk-in fieldset:disabled{opacity:.75}.walk-in .notice{overflow-wrap:anywhere}.walk-in .form-grid>button{align-self:end}
+
+.booking-schedule { max-width: 920px; }
+.booking-schedule fieldset { border: 0; padding: 0; margin-top: 24px; min-width: 0; }
+.booking-schedule legend { font-weight: 700; font-size: 1.2rem; }
+.schedule-day { border-top: 1px solid var(--border, #ddd); padding: 16px 0; }
+.schedule-day h4 { margin: 0 0 10px; }
+.schedule-intervals { display: grid; gap: 10px; }
+.schedule-interval { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.schedule-interval input { width: 130px; }
+.booking-schedule button { margin: 6px 6px 6px 0; }
+.booking-schedule input[type="number"] { max-width: 180px; }

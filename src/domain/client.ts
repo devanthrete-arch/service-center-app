@@ -14,6 +14,7 @@ import type {
   StaffMember,
   TimelineEntry,
   WalkInInput,
+  CreatedJob,
 } from './types';
 
 const get = <T>(path: string) => autoflex<T>(path, {}, true);
@@ -61,7 +62,10 @@ export const staffApi = {
     return get<{ data: JobSummary[]; total: number }>(`/v1/jobs?${params}`);
   },
   job: (id: string) => get<JobDetail>(`/v1/jobs/${id}`),
-  createJob: (input: WalkInInput) => command<JobDetail>('POST', '/v1/jobs', input),
+  createJob: (input: WalkInInput, idempotencyKey: string) =>
+    autoflex<CreatedJob>('/v1/jobs', {
+      method: 'POST', body: JSON.stringify(input), headers: { 'Idempotency-Key': idempotencyKey },
+    }, true),
   patchJob: (id: string, body: Record<string, unknown>, version: number) =>
     command<JobDetail>('PATCH', `/v1/jobs/${id}`, body, version),
   setStatus: (id: string, status: JobStatus, version: number, note?: string) =>

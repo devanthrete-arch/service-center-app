@@ -152,6 +152,7 @@ export function More() {
       <section className="panel">
         <h2>Shortcuts</h2>
         <div className="shortcut-list">
+          {canManageProfile && <Link to="/booking-schedule"><CalendarDays /> Working hours & booking slots<ChevronRight /></Link>}
           {isDesk ? (
             <Link to="/new">
               <Zap /> Walk-in

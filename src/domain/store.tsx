@@ -24,7 +24,6 @@ import {
   type Me,
   type Role,
   type StaffMember,
-  type WalkInInput,
 } from './types';
 
 type Store = {
@@ -41,7 +40,6 @@ type Store = {
   refresh: () => Promise<void>;
   job: (id: string) => Promise<JobDetail>;
   deliveries: (id: string) => Promise<Delivery[]>;
-  createJob: (input: WalkInInput) => Promise<JobDetail>;
   setStatus: (job: JobDetail, status: JobStatus, note?: string) => Promise<JobDetail>;
   hold: (job: JobDetail, reason: string, expectedResumeAt?: string) => Promise<JobDetail>;
   resume: (job: JobDetail) => Promise<JobDetail>;
@@ -110,11 +108,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       !profile.roles.some((role) => ['admin', 'manager', 'advisor'].includes(role));
     const desk = profile.permissions.includes('bookings:read');
     const [list, pending, scheduled, roster] = await Promise.all([
-      staffApi.jobs({
+      profile.permissions.includes('jobs:read') ? staffApi.jobs({
         active: true,
         assignedTo: technicianOnly ? 'me' : undefined,
         limit: 100,
-      }),
+      }) : Promise.resolve({ data: [], total: 0 }),
       desk ? staffApi.pendingBookings() : Promise.resolve([]),
       desk ? staffApi.rangeBookings(istToday(), istToday(13)) : Promise.resolve({ items: [] }),
       desk ? staffApi.roster().catch(() => []) : Promise.resolve([]),
@@ -159,11 +157,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       staff,
       technicians: staff.filter((member) => member.designation === 'TECHNICIAN'),
       can: (permission) => me.permissions.includes(permission),
-      isDesk: me.permissions.includes('jobs:create'),
+      isDesk: me.permissions.includes('jobs:create') &&
+        me.roles.some((value) => ['admin', 'manager', 'advisor'].includes(value)),
       refresh,
       job: (id) => staffApi.job(id),
       deliveries: (id) => staffApi.deliveries(id).catch(() => []),
-      createJob: async (input) => after(await staffApi.createJob(input)),
       setStatus: async (job, status, note) =>
         after(await staffApi.setStatus(job.id, status, job.version, note)),
       hold: async (job, reason, expectedResumeAt) =>

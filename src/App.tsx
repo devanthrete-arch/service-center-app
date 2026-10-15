@@ -1,3 +1,4 @@
+import { BookingSchedule } from './screens/BookingSchedule';
 import { ServiceMenu } from './screens/ServiceMenu';
 import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
@@ -34,6 +35,7 @@ function AuthedShell() {
         <Route path="bookings" element={<Bookings />} />
         <Route path="handover" element={<Handover />} />
         <Route path="service-menu" element={<ServiceMenu />} />
+        <Route path="booking-schedule" element={<BookingSchedule />} />
         <Route path="more" element={<More />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
