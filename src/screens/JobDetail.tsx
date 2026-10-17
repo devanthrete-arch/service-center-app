@@ -18,6 +18,7 @@ import {
 } from '../domain/types';
 import { Badge, Empty, ErrorText, Modal, statusTone, useAction } from './ui';
 import { TrackingLinkPanel } from './TrackingLinkPanel';
+import { InvoicePanel } from './InvoicePanel';
 
 type Tab = 'timeline' | 'inspection' | 'estimate' | 'record';
 type ModalKind = 'next' | 'note' | 'approval' | 'verbal' | 'hold' | 'skip' | 'cancel' | 'close' | 'more' | 'qc' | null;
@@ -32,6 +33,7 @@ export function JobDetailScreen() {
   const [modal, setModal] = useState<ModalKind>(null);
   const [loadError, setLoadError] = useState('');
   const [tracking, setTracking] = useState(false);
+  const [billing, setBilling] = useState(false);
   const moreButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -86,9 +88,9 @@ export function JobDetailScreen() {
           </p>
         </div>
         <div className="detail-actions">
-          {canManage && job.status === 'READY_FOR_PICKUP' ? (
-            <button className="primary" type="button" onClick={() => setModal('close')}>
-              Close and collect
+          {canManage && (job.status === 'READY_FOR_PICKUP' || !!job.invoice) ? (
+            <button className="primary" type="button" onClick={() => setBilling(true)}>
+              Invoice and payment
             </button>
           ) : null}
           {next && !['COMPLETED', 'CANCELLED', 'ON_HOLD', 'AWAITING_APPROVAL'].includes(job.status) ? (
@@ -107,6 +109,7 @@ export function JobDetailScreen() {
         </div>
       </div>
       <ErrorText error={error} />
+      {billing ? <InvoicePanel job={job} update={setJob} close={() => setBilling(false)} legacy={() => { setBilling(false); setModal('close'); }} /> : null}
       {tracking && <TrackingLinkPanel key={`${store.me.staff.id}:${store.me.center.id}:${job.id}`}
         jobId={job.id} staffId={store.me.staff.id} centerId={store.me.center.id}
         canReplace={store.can('jobs:update')} close={() => setTracking(false)}

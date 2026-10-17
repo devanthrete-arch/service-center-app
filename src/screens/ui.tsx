@@ -1,4 +1,5 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { Inbox } from 'lucide-react';
 import { errorMessage } from '../lib/api';
 import type { JobStatus } from '../domain/types';
 
@@ -21,6 +22,9 @@ export function Badge({ children, tone = 'neutral' }: { children: ReactNode; ton
 export function Empty({ title, copy }: { title: string; copy: string }) {
   return (
     <div className="empty">
+      <span className="empty-mark" aria-hidden="true">
+        <Inbox />
+      </span>
       <h3>{title}</h3>
       <p>{copy}</p>
     </div>
@@ -28,7 +32,11 @@ export function Empty({ title, copy }: { title: string; copy: string }) {
 }
 
 export function ErrorText({ error }: { error: string }) {
-  return error ? <p className="notice red">{error}</p> : null;
+  return error ? (
+    <p className="notice red" role="alert">
+      {error}
+    </p>
+  ) : null;
 }
 
 export function useAction() {
@@ -57,17 +65,45 @@ export function Modal({
   close: () => void;
   children: ReactNode;
 }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  useEffect(() => {
+    const previous = document.activeElement;
+    const element = dialog.current;
+    element?.showModal();
+    return () => {
+      element?.close();
+      if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+    };
+  }, []);
   return (
-    <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && close()}>
-      <div className="modal">
-        <div className="modal-head">
-          <h3>{title}</h3>
-          <button type="button" onClick={close}>
-            ×
-          </button>
-        </div>
-        {children}
+    <dialog
+      ref={dialog}
+      className="modal"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        close();
+      }}
+      onClick={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom
+        )
+          close();
+      }}
+    >
+      <div className="modal-head">
+        <h3 id={titleId}>{title}</h3>
+        <button type="button" aria-label="Close dialog" onClick={close}>
+          ×
+        </button>
       </div>
-    </div>
+      {children}
+    </dialog>
   );
 }

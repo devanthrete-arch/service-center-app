@@ -1,3 +1,4 @@
+import { RegistrationHandoff } from './RegistrationHandoff';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
@@ -680,7 +681,7 @@ export function WalkInFlow({ me, technicians, urgent = false, comebackId = null,
                 : 'Open a job card'}
           </h2>
           <p>
-            Confirm the returning customer and the vehicle brought to{' '}
+            Confirm the customer and the vehicle brought to{' '}
             {me.center.displayName || me.center.name}.
           </p>
         </div>
@@ -752,7 +753,7 @@ export function WalkInFlow({ me, technicians, urgent = false, comebackId = null,
       <fieldset className="intake-fields" disabled={locked || priorLoading || Boolean(priorError)}>
         {step === 1 ? (
           <div className="form-card">
-            <h3>Find the returning customer</h3>
+            <h3>Find or register the customer</h3>
             <div className="form-grid">
               <label className="full">
                 Owner mobile
@@ -802,11 +803,7 @@ export function WalkInFlow({ me, technicians, urgent = false, comebackId = null,
                       Use this customer
                     </button>
                   ) : (
-                    <p className="notice amber">
-                      Existing center record — account registration/linking required. Reception
-                      registration is pending; ask an authorized colleague to resolve the account
-                      link. No job has been opened.
-                    </p>
+                    <RegistrationHandoff key={normalizedPhone} phone={normalizedPhone!} linked={()=>void findCustomer()}/>
                   )}
                 </div>
               ) : null}
@@ -817,9 +814,7 @@ export function WalkInFlow({ me, technicians, urgent = false, comebackId = null,
                   tabIndex={-1}
                   aria-live="polite"
                 >
-                  New customer — registration required. Registration must begin at reception. This
-                  flow cannot create a verified account yet; the IAM registration integration is
-                  pending. No job has been opened.
+                  <RegistrationHandoff key={normalizedPhone} phone={normalizedPhone!} linked={()=>void findCustomer()}/>
                 </div>
               ) : null}
             </div>
@@ -879,7 +874,7 @@ export function WalkInFlow({ me, technicians, urgent = false, comebackId = null,
                   checked={another}
                   onChange={chooseAnother}
                 />
-                <span>Another vehicle</span>
+                <span>{vehicles.length ? 'Another vehicle' : 'Add vehicle for this visit'}</span>
               </label>
             </div>
             {activeBlocked ? (

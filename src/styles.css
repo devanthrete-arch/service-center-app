@@ -118,3 +118,89 @@
 .schedule-interval input { width: 130px; }
 .booking-schedule button { margin: 6px 6px 6px 0; }
 .booking-schedule input[type="number"] { max-width: 180px; }
+
+/* Shared interaction and mobile dialog polish. */
+:root { font-variant-numeric: tabular-nums; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid #286aa7; outline-offset: 3px;
+}
+.primary, .secondary { min-height: 44px; line-height: 1.35; }
+button:disabled { cursor: not-allowed; }
+@media (hover: hover) {
+  .primary:not(:disabled):hover { filter: brightness(1.09); }
+  .secondary:not(.light):not(:disabled):hover { background: #edf3f8; border-color: #b9cddd; }
+  .job-card:hover { border-color: #b9cddd; box-shadow: 0 5px 18px rgb(2 57 112 / 7%); }
+}
+.primary:not(:disabled):active, .secondary:not(:disabled):active { transform: translateY(1px); }
+.empty-mark { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: #edf3f8; color: var(--primary); margin-bottom: 16px; }
+.empty-mark svg { width: 24px; height: 24px; }
+.empty p { max-width: 34ch; margin-inline: auto; line-height: 1.6; }
+dialog.modal { border: 1px solid #d7e1e9; color: inherit; margin: auto; width: min(620px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0 24px 24px; overscroll-behavior: contain; }
+dialog.modal::backdrop { background: rgb(3 20 36 / 58%); }
+.modal-head { position: sticky; top: 0; z-index: 2; background: #fff; padding: 18px 0 14px; gap: 12px; }
+.modal-head h3 { min-width: 0; overflow-wrap: anywhere; font-size: 20px; line-height: 1.3; letter-spacing: -.025em; }
+.modal-head button { flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; color: #34495b; background: #f1f5f8; }
+.modal form, .modal fieldset { min-width: 0; }
+.modal fieldset { border: 0; padding: 0; margin: 0; }
+.modal input:not([type="checkbox"]):not([type="radio"]), .modal select, .modal textarea { max-width: 100%; min-width: 0; }
+.modal-actions { flex-wrap: wrap; }
+.invoice-context { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; margin: 0 0 18px; }
+.invoice-flow { display: grid; gap: 18px; }
+.invoice-flow > button { justify-self: start; }
+.invoice-flow p { line-height: 1.55; margin-bottom: 0; }
+.invoice-progress { display: flex; list-style: none; padding: 0 0 18px; margin: 0; border-bottom: 1px solid var(--border); gap: 8px; }
+.invoice-progress li { flex: 1; display: flex; align-items: center; gap: 7px; font-size: 12px; color: #697784; }
+.invoice-progress li > span { flex: 0 0 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #eef2f5; font-weight: 700; }
+.invoice-progress li[aria-current] { color: var(--primary); font-weight: 700; }
+.invoice-progress li[aria-current] > span { background: var(--primary); color: #fff; }
+.invoice-progress .is-complete > span { background: #e0f2e9; color: #20664b; }
+.invoice-fields { display: grid; gap: 26px; }
+.invoice-flow .invoice-section { display: grid; gap: 16px; }
+.invoice-section legend { font-size: 15px; letter-spacing: -.015em; font-weight: 700; margin-bottom: 16px; padding: 0; }
+.invoice-section label { gap: 7px; line-height: 1.4; margin: 0; }
+.invoice-section .hint { margin: -6px 0 0; }
+.invoice-review { width: 100%; }
+.invoice-preview { background: #f0f6fa; border: 1px solid #ccdee9; border-radius: 14px; padding: 18px; margin-top: 20px; display: grid; gap: 14px; overflow-wrap: anywhere; }
+.invoice-preview h4 { margin: 0; font-size: 16px; }
+.invoice-preview p { font-size: 12px; color: #526476; }
+.invoice-totals { display: grid; gap: 10px; margin: 0; }
+.invoice-totals > div { display: flex; justify-content: space-between; gap: 16px; }
+.invoice-totals dt { color: #526476; font-size: 13px; }
+.invoice-totals dd { margin: 0; font-weight: 600; white-space: nowrap; }
+.invoice-total { border-top: 1px solid #ccdee9; padding-top: 14px; margin-top: 4px; align-items: baseline; }
+.invoice-total dt { font-size: 15px; color: #15324a; font-weight: 700; }
+.invoice-total dd { font-size: 26px; letter-spacing: -.03em; color: var(--primary); }
+.invoice-issued { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.booking-schedule button { min-height: 44px; border: 1px solid var(--border); border-radius: 10px; padding: 9px 13px; color: var(--primary); background: #f3f7fa; font-weight: 600; }
+.booking-schedule h3 { margin: 0 0 16px; font-size: 18px; }
+.booking-schedule label { gap: 8px; line-height: 1.45; }
+.booking-schedule fieldset > label + label { margin-top: 14px; }
+@media (max-width: 640px) {
+  dialog.modal { padding: 0 16px 20px; border-radius: 18px; }
+  .modal-head h3 { font-size: 18px; }
+  .modal input:not([type="checkbox"]):not([type="radio"]), .modal select, .modal textarea { font-size: 16px; min-height: 46px; }
+  .invoice-progress li { font-size: 11px; gap: 5px; }
+  .invoice-progress li > span { flex-basis: 24px; height: 24px; }
+  .invoice-preview { padding: 14px; }
+  .invoice-preview > button, .invoice-section > button { width: 100%; }
+  .modal-actions > button { flex: 1 1 auto; }
+  .hero-actions { flex-wrap: wrap; }
+  .job-head { gap: 12px; flex-wrap: wrap; }
+  .job-head > div { min-width: 0; overflow-wrap: anywhere; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button, a { transition: none; }
+  .primary:not(:disabled):active, .secondary:not(:disabled):active { transform: none; }
+}
+dialog.modal { scroll-padding-block-start: 100px; }
+.invoice-preview:focus { outline: 2px solid #286aa7; outline-offset: 3px; }
+
+@media print { dialog.modal { display: none !important; } }
+@media (min-width: 641px) {
+  .invoice-flow .invoice-section { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .invoice-section > p, .invoice-section > button, .invoice-section > .invoice-wide, .invoice-section > label:has(textarea), .invoice-section > .check { grid-column: 1 / -1; }
+}
+.registration-handoff { display: grid; gap: 14px; padding: 16px; background: #f4f8fb; border: 1px solid #cfdee9; border-radius: 14px; min-width: 0; }
+.registration-handoff img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 10px; }
+.registration-handoff h4, .registration-handoff p { margin: 0; line-height: 1.5; }
+.registration-handoff label { min-width: 0; }
